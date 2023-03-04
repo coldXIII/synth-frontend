@@ -6,8 +6,8 @@
             :error="errors?.title ? errors?.title[0] : ''" />
         <TextInput label="band Country" inputType="text" placeholder="Band Country" v-model:input="location"
             :error="errors?.location ? errors?.location[0] : ''" />
-        <CroppedImage :image="image ? image : DefaultAvatar" />
-        {{ imageFile?.name }}
+        <CroppedImage v-if="choosedImage" :image="choosedImage" />
+        <CroppedImage v-else :image="image ? image : DefaultAvatar" />
         <div class="inputbox">
             <label for="image">
                 Upload Image
@@ -24,7 +24,6 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
-import { useProfileStore } from '@/stores/profileStore'
 import { useBandsStore } from '@/stores/bandsStore'
 import TextInput from '@/components/shared/TextInput.vue';
 import TextArea from '@/components/shared/TextArea.vue';
@@ -38,7 +37,6 @@ const route = useRoute()
 const router = useRouter()
 const bandsStore = useBandsStore()
 const userStore = useUserStore()
-const profileStore = useProfileStore()
 
 const title = ref('')
 const location = ref('')
@@ -46,6 +44,7 @@ const description = ref('')
 const image = ref('')
 const newImage = ref('')
 const imageFile = ref<any>()
+const choosedImage = ref('')
 const fileInput = ref()
 const errors = ref<any>([])
 
@@ -55,6 +54,7 @@ onMounted(async () => {
 
 const handleFileUpload = () => {
     imageFile.value = fileInput.value.files[0]
+    choosedImage.value = URL.createObjectURL(imageFile.value)
 }
 
 const getUploadedImage = async () => {
@@ -116,9 +116,9 @@ const updateBand = async () => {
         })
         Swal.fire(
             {
-                title:'Band is updated!',
-                text:'The band you edited is called "' + title.value + '"',
-                icon:'success',
+                title: 'Band is updated!',
+                text: 'The band you edited is called "' + title.value + '"',
+                icon: 'success',
                 background: "rgba(0,0,0,0.5)",
                 confirmButtonColor: "#219dff",
             }

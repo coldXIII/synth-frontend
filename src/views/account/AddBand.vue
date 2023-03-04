@@ -6,7 +6,7 @@
             :error="errors?.title ? errors?.title[0] : ''" />
         <TextInput label="Country of the Band" inputType="text" placeholder="Band Country" v-model:input="location"
             :error="errors?.location ? errors?.location[0] : ''" />
-        {{ imageFile?.name }}
+        <CroppedImage :image="choosedImage" />
         <div class="inputbox">
             <label for="image">
                 Upload Image
@@ -28,6 +28,7 @@ import { useBandsStore } from '@/stores/bandsStore'
 import TextInput from '@/components/shared/TextInput.vue';
 import TextArea from '@/components/shared/TextArea.vue';
 import SubmitBtn from '@/components/shared/SubmitBtn.vue'
+import CroppedImage from '@/components/shared/CroppedImage.vue'
 import Swal from '@/swal'
 
 const userStore = useUserStore()
@@ -40,10 +41,12 @@ const location = ref('')
 const image = ref('')
 const imageFile = ref()
 const fileInput = ref()
+const choosedImage = ref('')
 const errors = ref<any>([])
 
 const handleFileUpload = () => {
     imageFile.value = fileInput.value.files[0]
+    choosedImage.value = URL.createObjectURL(imageFile.value)
 }
 
 const getUploadedImage = async () => {

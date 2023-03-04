@@ -5,7 +5,8 @@
             <div class="divider"></div>
             <TextInput label="Your New Name" inputType="text" placeholder="Your Name" v-model:input="username"
                 :error="errors?.username ? errors?.username[0] : ''" />
-            <CroppedImage :image="image ? image : DefaultAvatar" />
+            <CroppedImage v-if="choosedImage" :image="choosedImage" />
+            <CroppedImage v-else :image="image ? image : DefaultAvatar" />
             <div class="inputbox">
                 <label for="image">
                     Upload Image
@@ -34,8 +35,11 @@ const router = useRouter()
 
 const username = ref('')
 const image = ref('')
+const choosedImage = ref('')
 const fileInput = ref<any>()
 const errors = ref<any>([])
+
+
 
 onMounted(() => {
     username.value = profileStore.username || ''
@@ -45,6 +49,7 @@ onMounted(() => {
 
 const handleUpload = (event: any) => {
     fileInput.value = event.target.files[0];
+    choosedImage.value = URL.createObjectURL(fileInput.value)
 }
 
 const getUploadedImage = async () => {
